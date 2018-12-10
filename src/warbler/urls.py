@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from app_warbler import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', views.ListAllTweetsView.as_view(), name='list-all-tweets')
 ]
