@@ -1,0 +1,7 @@
+{% extends 'app_warbler/base.html' %}
+
+{% block content %}
+    <h5>{{ tweet.author }}</h5>
+    {{ tweet.update_datetime }}
+    {{ tweet.content }}
+{% endblock content %}
