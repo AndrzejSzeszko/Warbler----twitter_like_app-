@@ -6,11 +6,11 @@ from . import models
 
 class ProfileForm(forms.ModelForm):
     class Meta:
-        model = models.Profile
+        model  = models.Profile
         fields = '__all__'
 
 
 class TweetForm(forms.ModelForm):
     class Meta:
-        model = models.Tweet
+        model  = models.Tweet
         fields = '__all__'
