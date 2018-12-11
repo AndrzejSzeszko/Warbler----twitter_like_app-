@@ -1,6 +1,8 @@
 {% extends 'app_warbler/base.html' %}
 
 {% block content %}
+    <h3>All Tweets:</h3>
+
     {% for tweet in tweet_list %}
         {{ tweet.user__username }} {{ tweet.creation_datetime }} {{ tweet.update_datetime }}
         {{ tweet.content }}
