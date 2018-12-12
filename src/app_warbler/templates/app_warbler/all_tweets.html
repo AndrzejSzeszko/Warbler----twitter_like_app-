@@ -4,7 +4,9 @@
     <h3>All Tweets:</h3>
 
     {% for tweet in tweet_list %}
-        {{ tweet.user__username }} {{ tweet.creation_datetime }} {{ tweet.update_datetime }}
-        {{ tweet.content }}
+        <p>
+        {{ tweet.author }} {{ tweet.creation_datetime }} {{ tweet.update_datetime }}
+        <a href="{% url 'tweet-details' tweet.pk %}">{{ tweet.content }}</a>
+        </p>
     {% endfor %}
 {% endblock content %}
