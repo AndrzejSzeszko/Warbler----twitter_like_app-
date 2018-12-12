@@ -1,0 +1,26 @@
+{% extends 'app_warbler/base.html' %}
+
+{% block content %}
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+
+    <h4>{{ profile.user.username }}</h4>
+    {{ profile.user.first_name }}{{ profile.user.last_name }}
+    <p>{{ profile.user.email }}</p>
+    <p>About myself: {{ profile.about_myself }}</p>
+    <p>My Tweets:</p>
+    {% for tweet in tweets %}
+        <p>
+            {{ tweet.creation_datetime }}
+            {{ tweet.update_datetime }}
+            {{ tweet.content }}
+        </p>
+    {% endfor %}
+
+    {% endblock content %}
