@@ -28,6 +28,8 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='app_warbler/logout.html'), name='logout'),
     path('tweet_details/<int:pk>', views.TweetDetailsView.as_view(), name='tweet-details'),
     path('update_tweet/<int:pk>', views.UpdateTweetView.as_view(), name='update-tweet'),
+    path('profile_details/<int:pk>', views.ProfileDetailsView.as_view(), name='profile-details'),
+    path('create_user', views.CreateUserView.as_view(), name='create-user-sign-in'),
 ]
 
 
