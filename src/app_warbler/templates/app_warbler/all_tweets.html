@@ -5,7 +5,8 @@
 
     {% for tweet in tweet_list %}
         <p>
-        {{ tweet.author }} {{ tweet.creation_datetime }} {{ tweet.update_datetime }}
+        <a href="{% url 'profile-details' tweet.author.id %}">{{ tweet.author }}</a>
+         {{ tweet.creation_datetime }} {{ tweet.update_datetime }}
         <a href="{% url 'tweet-details' tweet.pk %}">{{ tweet.content }}</a>
         </p>
     {% endfor %}
