@@ -24,27 +24,16 @@ class Tweet(models.Model):
         return reverse('tweet-details', kwargs={'pk': self.pk})
 
 
-# class Comment(models.Model):
-#     author = models.ForeignKey(
-#         User,
-#         on_delete=models.SET(get_sentinel_user),
-#         related_name='messages_from_user'
-#     )
-#     content           = models.TextField()
-#     creation_datetime = models.DateTimeField(auto_now_add=True)
+class Comment(models.Model):
+    author            = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user))
+    tweet             = models.ForeignKey(Tweet, on_delete=models.CASCADE)
+    content           = models.TextField()
+    creation_datetime = models.DateTimeField(auto_now_add=True)
 
 
 class Message(models.Model):
-    from_user = models.ForeignKey(
-        User,
-        on_delete=models.SET(get_sentinel_user),
-        related_name='messages_from_user'
-    )
-    to_user = models.ForeignKey(
-        User,
-        on_delete=models.SET(get_sentinel_user),
-        related_name='messages_to_user'
-    )
+    from_user         = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user), related_name='messages_from_user')
+    to_user           = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user), related_name='messages_to_user')
     content           = models.TextField()
     creation_datetime = models.DateTimeField(auto_now_add=True)
     is_read           = models.BooleanField(default=False)
