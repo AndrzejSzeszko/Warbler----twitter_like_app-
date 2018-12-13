@@ -23,13 +23,15 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.ListAllTweetsView.as_view(), name='list-all-tweets'),
-    path('create_tweet', views.CreateTweetView.as_view(), name='create-tweet'),
+    path('create_tweet/', views.CreateTweetView.as_view(), name='create-tweet'),
     path('login/', auth_views.LoginView.as_view(template_name='app_warbler/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='app_warbler/logout.html'), name='logout'),
-    path('tweet_details/<int:pk>', views.TweetDetailsView.as_view(), name='tweet-details'),
-    path('update_tweet/<int:pk>', views.UpdateTweetView.as_view(), name='update-tweet'),
-    path('profile_details/<int:pk>', views.ProfileDetailsView.as_view(), name='profile-details'),
-    path('create_user', views.CreateUserView.as_view(), name='create-user-sign-in'),
+    path('tweet_details/<int:pk>/', views.TweetDetailsView.as_view(), name='tweet-details'),
+    path('update_tweet/<int:pk>/', views.UpdateTweetView.as_view(), name='update-tweet'),
+    path('profile_details/<int:pk>/', views.ProfileDetailsView.as_view(), name='profile-details'),
+    path('create_user/', views.CreateUserView.as_view(), name='create-user-sign-in'),
+    path('create_message/<int:to_user>/', views.CreateMessageView.as_view(), name='create-message'),
+    path('user_messages/<int:pk>/', views.ListUserMessagesView.as_view(), name='user-messages'),
 ]
 
 
