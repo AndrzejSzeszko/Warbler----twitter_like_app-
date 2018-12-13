@@ -1,8 +1,10 @@
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.db.models import Q
 from django.shortcuts import (
     render,
-    redirect
+    redirect,
+    reverse
 )
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
@@ -45,9 +47,9 @@ class CreateTweetView(LoginRequiredMixin, generic.CreateView):
 
 
 class UpdateTweetView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
-    model           = models.Tweet
-    template_name   = 'app_warbler/update_tweet.html'
-    fields          = ['content']
+    model         = models.Tweet
+    template_name = 'app_warbler/update_tweet.html'
+    fields        = ['content']
 
     def test_func(self):
         return self.request.user.id == self.get_object().author.id
@@ -62,6 +64,41 @@ class ProfileDetailsView(generic.DetailView):
     template_name = 'app_warbler/profile_details.html'
 
     def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
+        ctx           = super().get_context_data(**kwargs)
         ctx['tweets'] = self.object.user.tweet_set.all().order_by('-update_datetime')
         return ctx
+
+
+class CreateMessageView(generic.CreateView):
+    model = models.Message
+    template_name = 'app_warbler/create_message.html'
+    form_class = forms.MessageForm
+    pk_url_kwarg = 'to_user'
+
+    def get_context_data(self, **kwargs):
+        ctx            = super().get_context_data(**kwargs)
+        ctx['to_user'] = User.objects.get(pk=self.kwargs.get(self.pk_url_kwarg))
+        return ctx
+
+    def get_success_url(self):
+        return reverse('user-messages', kwargs={'pk': self.request.user.pk})
+
+    def form_valid(self, form):
+        form.instance.from_user = self.request.user
+        form.instance.to_user   = User.objects.get(pk=self.kwargs.get(self.pk_url_kwarg))
+        rsp                     = super().form_valid(form)
+        messages.success(self.request, f'Message to {form.instance.to_user} successfully sent.')
+        return rsp
+
+
+class ListUserMessagesView(generic.ListView):
+    model         = models.Message
+    template_name = 'app_warbler/user_messages.html'
+    paginate_by   = 10
+    ordering      = ['-creation_datetime']
+
+    def get_queryset(self):
+        return super().get_queryset().filter(
+            Q(from_user=self.request.user) |
+            Q(to_user=self.request.user)
+        )
