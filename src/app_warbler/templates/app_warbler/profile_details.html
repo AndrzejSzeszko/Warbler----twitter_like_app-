@@ -9,6 +9,7 @@
         </ul>
     {% endif %}
 
+    <a href="{% url 'create-message' profile.user_id %}">Send message to this user</a>
 
     <h4>{{ profile.user.username }}</h4>
     {{ profile.user.first_name }}{{ profile.user.last_name }}
