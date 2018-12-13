@@ -1,0 +1,19 @@
+{% extends 'app_warbler/base.html' %}
+
+{% block content %}
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h4>Message {{ message.id }}:</h4>
+    <ul>
+        <li>From: {{ message.from_user }}</li>
+        <li>To: {{ message.to_user }}</li>
+        <li>Created: {{ message.creation_datetime }}</li>
+        <li>Content: {{ message.content }}</li>
+    </ul>
+{% endblock content %}
