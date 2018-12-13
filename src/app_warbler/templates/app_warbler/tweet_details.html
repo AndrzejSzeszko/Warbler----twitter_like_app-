@@ -9,11 +9,19 @@
         </ul>
     {% endif %}
 
+    <h4>{{ tweet.author }}</h4>
+    <p>{{ tweet.update_datetime }}</p>
+    <p>{{ tweet.content }}</p>
+    <p>
+        {% if tweet.author.id == user.id %}
+            <a href="{% url 'update-tweet' tweet.id %}">Edit</a>
+        {% endif %}
+    </p>
 
-    <h5>{{ tweet.author }}</h5>
-    {{ tweet.update_datetime }}
-    {{ tweet.content }}
-    {% if tweet.author.id == user.id %}
-        <a href="{% url 'update-tweet' tweet.id %}">Edit</a>
-    {% endif %}
+    <h5>Comments:</h5>
+    {% for comment in comments %}
+        <p>{{ comment.author }} on {{ comment.creation_datetime }}:</p>
+        <p>{{ comment.content }}</p>
+    {% endfor %}
+
 {% endblock content %}
