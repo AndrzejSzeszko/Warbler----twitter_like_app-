@@ -12,13 +12,12 @@
 
     <h3>User {{ user.username }} messages:</h3>
 
-    {% for message in message_list %}
-        <p>
-            <a href="{% url 'profile-details' message.from_user_id %}">{{ message.from_user }}</a>
-            <a href="{% url 'profile-details' message.to_user_id %}">{{ message.to_user }}</a>
-            {{ message.creation_datetime }}
-{#            <a href="{% url 'message-details' message.pk %}">{{ message.content }}</a>#}
-            {{ message.content }}
+    {% for msg in message_list %}
+        <p {% if not msg.is_read %}style="font-weight: bolder; text-decoration: underline"{% endif %}>
+            <a href="{% url 'profile-details' msg.from_user_id %}">{{ msg.from_user }}</a>
+            <a href="{% url 'profile-details' msg.to_user_id %}">{{ msg.to_user }}</a>
+            {{ msg.creation_datetime }}
+            <a href="{% url 'msg-details' msg.pk %}">{{ msg.content|slice:":10" }}...</a>
         </p>
     {% endfor %}
 {% endblock content %}
