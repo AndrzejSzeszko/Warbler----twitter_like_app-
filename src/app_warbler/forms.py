@@ -21,3 +21,10 @@ class TweetForm(forms.ModelForm):
     class Meta:
         model  = models.Tweet
         fields = '__all__'
+
+
+class MessageForm(forms.ModelForm):
+    class Meta:
+        model  = models.Message
+        fields = ['content']
+
