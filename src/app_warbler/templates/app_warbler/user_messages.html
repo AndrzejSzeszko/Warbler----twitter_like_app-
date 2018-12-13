@@ -1,0 +1,24 @@
+{% extends 'app_warbler/base.html' %}
+
+{% block content %}
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <h3>User {{ user.username }} messages:</h3>
+
+    {% for message in message_list %}
+        <p>
+            <a href="{% url 'profile-details' message.from_user_id %}">{{ message.from_user }}</a>
+            <a href="{% url 'profile-details' message.to_user_id %}">{{ message.to_user }}</a>
+            {{ message.creation_datetime }}
+{#            <a href="{% url 'message-details' message.pk %}">{{ message.content }}</a>#}
+            {{ message.content }}
+        </p>
+    {% endfor %}
+{% endblock content %}

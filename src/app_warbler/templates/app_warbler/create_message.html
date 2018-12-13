@@ -1,0 +1,10 @@
+{% extends 'app_warbler/base.html' %}
+
+{% block content %}
+    <h2>Sending a message to user {{ to_user.username }}</h2>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Send">
+    </form>
+{% endblock content %}
