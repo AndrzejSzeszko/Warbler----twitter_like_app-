@@ -32,6 +32,7 @@ urlpatterns = [
     path('create_user/', views.CreateUserView.as_view(), name='create-user-sign-in'),
     path('create_message/<int:to_user>/', views.CreateMessageView.as_view(), name='create-message'),
     path('user_messages/<int:pk>/', views.ListUserMessagesView.as_view(), name='user-messages'),
+    path('message_details/<int:pk>/', views.MessageDetailsView.as_view(), name='message-details'),
 ]
 
 
