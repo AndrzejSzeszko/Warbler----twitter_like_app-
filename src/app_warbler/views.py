@@ -35,6 +35,11 @@ class TweetDetailsView(generic.DetailView):
     model         = models.Tweet
     template_name = 'app_warbler/tweet_details.html'
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['comments'] = self.get_object().comment_set.all().order_by('creation_datetime')
+        return ctx
+
 
 class CreateTweetView(LoginRequiredMixin, generic.CreateView):
     model         = models.Tweet
@@ -70,10 +75,10 @@ class ProfileDetailsView(generic.DetailView):
 
 
 class CreateMessageView(generic.CreateView):
-    model = models.Message
+    model         = models.Message
     template_name = 'app_warbler/create_message.html'
-    form_class = forms.MessageForm
-    pk_url_kwarg = 'to_user'
+    form_class    = forms.MessageForm
+    pk_url_kwarg  = 'to_user'
 
     def get_context_data(self, **kwargs):
         ctx            = super().get_context_data(**kwargs)
@@ -85,7 +90,7 @@ class CreateMessageView(generic.CreateView):
 
     def form_valid(self, form):
         form.instance.from_user = self.request.user
-        form.instance.to_user   = User.objects.get(pk=self.kwargs.get(self.pk_url_kwarg))
+        form.instance.to_user   = self.get_context_data()['to_user']
         rsp                     = super().form_valid(form)
         messages.success(self.request, f'Message to {form.instance.to_user} successfully sent.')
         return rsp
@@ -102,3 +107,15 @@ class ListUserMessagesView(generic.ListView):
             Q(from_user=self.request.user) |
             Q(to_user=self.request.user)
         )
+
+
+class MessageDetailsView(generic.DetailView):
+    model         = models.Message
+    template_name = 'app_warbler/message_details.html'
+
+    def get_queryset(self):
+        return self.model.objects.filter(pk=self.kwargs.get('pk'))
+
+    def get(self, request, *args, **kwargs):
+        self.get_queryset().update(is_read=True)
+        return super().get(self.request)
