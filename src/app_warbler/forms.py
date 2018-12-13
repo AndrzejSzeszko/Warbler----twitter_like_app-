@@ -28,3 +28,8 @@ class MessageForm(forms.ModelForm):
         model  = models.Message
         fields = ['content']
 
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model  = models.Comment
+        fields = ['content']
