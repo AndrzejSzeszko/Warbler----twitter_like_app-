@@ -26,10 +26,10 @@ class TweetForm(forms.ModelForm):
 class MessageForm(forms.ModelForm):
     class Meta:
         model  = models.Message
-        fields = ['content']
+        fields = ['message_content']
 
 
 class CommentForm(forms.ModelForm):
     class Meta:
         model  = models.Comment
-        fields = ['content']
+        fields = ['comment_content']
