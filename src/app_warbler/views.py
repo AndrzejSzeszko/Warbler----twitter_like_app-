@@ -110,6 +110,25 @@ class UpdateTweetView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateVie
         return redirect('tweet-details', pk=self.get_object().pk)
 
 
+class DeleteTweetView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+    model         = models.Tweet
+    template_name = 'app_warbler/delete_tweet.html'
+
+    def get_success_url(self):
+        return reverse_lazy('profile-details', kwargs={'pk': self.get_object().author.id})
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(is_blocked=False)
+
+    def test_func(self):
+        return self.request.user.id == self.get_object().author.id
+
+    def handle_no_permission(self):
+        messages.error(self.request, 'Only the author of the following post can delete it! Log in as one!')
+        return redirect('tweet-details', pk=self.get_object().pk)
+
+
 class ProfileDetailsView(LoginRequiredMixin, generic.DetailView):
     model         = models.Profile
     template_name = 'app_warbler/profile_details.html'
@@ -165,3 +184,22 @@ class MessageDetailsView(LoginRequiredMixin, generic.DetailView):
     def get(self, request, *args, **kwargs):
         self.get_queryset().update(is_read=True)
         return super().get(self.request)
+
+
+class DeleteCommentView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+        model         = models.Comment
+        template_name = 'app_warbler/delete_comment.html'
+
+        def get_success_url(self):
+            return reverse_lazy('tweet-details', kwargs={'pk': self.get_object().tweet.id})
+
+        def get_queryset(self):
+            queryset = super().get_queryset()
+            return queryset.filter(is_blocked=False)
+
+        def test_func(self):
+            return self.request.user.id == self.get_object().author.id
+
+        def handle_no_permission(self):
+            messages.error(self.request, 'Only the author of that comment can delete it! Log in as one!')
+            return redirect('tweet-details', pk=self.get_object().tweet.pk)
