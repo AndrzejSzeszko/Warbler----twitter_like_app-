@@ -14,6 +14,13 @@ def block_object(model_admin, request, queryset):
 block_object.short_description = 'Block selected objects'
 
 
+def unblock_object(model_admin, request, queryset):
+    queryset.update(is_blocked=False)
+
+
+unblock_object.short_description = 'Unblock selected objects'
+
+
 def comment_abstract(comment_obj):
     return f'{comment_obj.comment_content[:10]}...'
 
@@ -31,7 +38,7 @@ class ProfileAdmin(admin.ModelAdmin):
         'user',
         'about_myself'
     ]
-    actions = [block_object]
+    actions = [block_object, unblock_object]
 
 
 class CommentAdmin(admin.ModelAdmin):
@@ -43,7 +50,7 @@ class CommentAdmin(admin.ModelAdmin):
         'creation_datetime',
         'is_blocked'
     ]
-    actions = [block_object]
+    actions = [block_object, unblock_object]
 
 
 class TweetAdmin(admin.ModelAdmin):
@@ -55,7 +62,7 @@ class TweetAdmin(admin.ModelAdmin):
         'update_datetime',
         'is_blocked'
     ]
-    actions = [block_object]
+    actions = [block_object, unblock_object]
 
 
 class MessageAdmin(admin.ModelAdmin):
@@ -68,7 +75,7 @@ class MessageAdmin(admin.ModelAdmin):
         'is_read',
         'is_blocked'
     ]
-    actions = [block_object]
+    actions = [block_object, unblock_object]
 
 
 admin.site.register(Profile, ProfileAdmin)
