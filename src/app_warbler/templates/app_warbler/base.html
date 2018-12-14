@@ -14,11 +14,12 @@
         <a href="{% url 'list-all-tweets' %}">Home</a>
         <a href="{% url 'create-tweet' %}">Create Tweet</a>
         <a href="{% url 'create-user-sign-in' %}">Sign in</a>
-        <p>You are logged as {{ user }}</p>
         {% if user.is_authenticated %}
+            <p>You are logged as <a href="{% url 'profile-details' user.pk %}">{{ user }}</a></p>
             <a href="{% url 'user-messages' user.pk %}">Messages</a>
             <a href="{% url 'logout' %}">Logout</a>
         {% else %}
+            <p>You are logged as {{ user }} </p>
             <a href="{% url 'login' %}">Login</a>
         {% endif %}
     </fieldset>
