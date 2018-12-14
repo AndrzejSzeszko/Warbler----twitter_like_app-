@@ -16,7 +16,7 @@ class Profile(models.Model):
 
 class Tweet(models.Model):
     author            = models.ForeignKey(User, on_delete=models.CASCADE)
-    content           = models.TextField()
+    tweet_content     = models.TextField()
     creation_datetime = models.DateTimeField(auto_now_add=True)
     update_datetime   = models.DateTimeField(auto_now=True)
 
@@ -27,13 +27,13 @@ class Tweet(models.Model):
 class Comment(models.Model):
     author            = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user))
     tweet             = models.ForeignKey(Tweet, on_delete=models.CASCADE)
-    content           = models.TextField()
+    comment_content   = models.TextField()
     creation_datetime = models.DateTimeField(auto_now_add=True)
 
 
 class Message(models.Model):
     from_user         = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user), related_name='messages_from_user')
     to_user           = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user), related_name='messages_to_user')
-    content           = models.TextField()
+    message_content   = models.TextField()
     creation_datetime = models.DateTimeField(auto_now_add=True)
     is_read           = models.BooleanField(default=False)
