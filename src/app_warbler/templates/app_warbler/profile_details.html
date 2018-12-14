@@ -2,7 +2,9 @@
 
 {% block content %}
 
-    <a href="{% url 'create-message' profile.user_id %}">Send message to this user</a>
+    <button type="button">
+     <a href="{% url 'create-message' profile.user_id %}">Send message to this user</a>
+    </button>
 
     <h4>{{ profile.user.username }}</h4>
     {% if profile.user.id == user.id %}
@@ -18,7 +20,7 @@
         <p>
             {{ tweet.creation_datetime }}
             {{ tweet.update_datetime }}
-            {{ tweet.content }}
+            <a href="{% url 'tweet-details' tweet.id %}">{{ tweet.tweet_content }}</a>
         </p>
     {% endfor %}
 
