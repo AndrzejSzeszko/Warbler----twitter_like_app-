@@ -2,7 +2,6 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import (
-    render,
     redirect,
     reverse
 )
@@ -34,17 +33,36 @@ class ListAllTweetsView(generic.ListView):
 class TweetDetailsView(generic.DetailView):
     model         = models.Tweet
     template_name = 'app_warbler/tweet_details.html'
+    form_class    = forms.CommentForm
+
+    def get_success_url(self):
+        return reverse('tweet-details', kwargs={'pk': self.kwargs.get('pk')})
 
     def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx['comments'] = self.get_object().comment_set.all().order_by('creation_datetime')
+        ctx                 = super().get_context_data(**kwargs)
+        ctx['comments']     = self.get_object().comment_set.all().order_by('creation_datetime')
+        ctx['comment_form'] = self.form_class()
         return ctx
+
+    def get_queryset(self):
+        return self.model.objects.filter(pk=self.kwargs.get('pk'))
+
+    def post(self, *args, **kwargs):
+        form = self.form_class(self.request.POST)
+        if form.is_valid():
+            form.instance.author = self.request.user
+            form.instance.tweet  = self.get_object()
+            form.save()
+            messages.success(self.request, 'Your comment has been successfully posted.')
+        else:
+            messages.error(self.request, 'We were unable to post your comment.')
+        return redirect(self.get_success_url())
 
 
 class CreateTweetView(LoginRequiredMixin, generic.CreateView):
     model         = models.Tweet
     template_name = 'app_warbler/create_tweet.html'
-    fields        = ['content']
+    fields        = ['tweet_content']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -54,7 +72,7 @@ class CreateTweetView(LoginRequiredMixin, generic.CreateView):
 class UpdateTweetView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model         = models.Tweet
     template_name = 'app_warbler/update_tweet.html'
-    fields        = ['content']
+    fields        = ['tweet_content']
 
     def test_func(self):
         return self.request.user.id == self.get_object().author.id
