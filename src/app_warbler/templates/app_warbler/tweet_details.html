@@ -11,7 +11,7 @@
 
     <h4>{{ tweet.author }}</h4>
     <p>{{ tweet.update_datetime }}</p>
-    <p>{{ tweet.content }}</p>
+    <p>{{ tweet.tweet_content }}</p>
     <p>
         {% if tweet.author.id == user.id %}
             <a href="{% url 'update-tweet' tweet.id %}">Edit</a>
