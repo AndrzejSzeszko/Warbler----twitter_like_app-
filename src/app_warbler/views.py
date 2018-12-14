@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.db.models import Q
+from django.urls import reverse_lazy
 from django.shortcuts import (
     redirect,
     reverse
@@ -20,7 +21,26 @@ class CreateUserView(generic.CreateView):
     model         = User
     template_name = 'app_warbler/create_user.html'
     form_class    = forms.CreateUserForm
-    success_url   = 'login'
+    success_url   = reverse_lazy('login')
+
+
+class DeleteUserView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+    model         = User
+    template_name = 'app_warbler/delete_user.html'
+    success_url   = reverse_lazy('create-user-sign-in')
+
+    def test_func(self):
+        return self.request.user.pk == self.get_object().pk
+
+    def handle_no_permission(self):
+        messages.error(self.request, 'Only the owner of the following profile can delete it! Log in as one!')
+        return redirect('profile-details', pk=self.get_object().pk)
+
+    def delete(self, request, *args, **kwargs):
+        obj = self.get_object()
+        rsp = super().delete(request, *args, **kwargs)
+        messages.success(request, f'Profile {obj} has been successfully deleted.')
+        return rsp
 
 
 class ListAllTweetsView(LoginRequiredMixin, generic.ListView):
