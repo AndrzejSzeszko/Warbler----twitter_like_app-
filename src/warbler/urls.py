@@ -33,6 +33,7 @@ urlpatterns = [
     path('create_message/<int:to_user>/', views.CreateMessageView.as_view(), name='create-message'),
     path('user_messages/<int:pk>/', views.ListUserMessagesView.as_view(), name='user-messages'),
     path('message_details/<int:pk>/', views.MessageDetailsView.as_view(), name='msg-details'),
+    path('delete_user/<int:pk>/', views.DeleteUserView.as_view(), name='delete-user'),
 ]
 
 if settings.DEBUG:
