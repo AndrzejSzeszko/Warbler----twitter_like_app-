@@ -2,12 +2,19 @@
 
 {% block content %}
 
-    <h4>{{ tweet.author }}</h4>
-    <p>{{ tweet.update_datetime }}</p>
+    <h4>Author: <a href="{% url 'profile-details' tweet.author.id %}">{{ tweet.author }}</a></h4>
+    <p>Created: {{ tweet.creation_datetime }}</p>
+    <p>Lastly Updated: {{ tweet.update_datetime }}</p>
+    <p>Content:</p>
     <p>{{ tweet.tweet_content }}</p>
     <p>
         {% if tweet.author.id == user.id %}
-            <a href="{% url 'update-tweet' tweet.id %}">Edit</a>
+            <button type="button">
+                <a href="{% url 'update-tweet' tweet.id %}">Edit tweet</a>
+            </button>
+            <button type="button">
+                <a href="{% url 'delete-tweet' tweet.id %}">Delete tweet</a>
+            </button>
         {% endif %}
     </p>
 
@@ -15,6 +22,11 @@
     {% for comment in comments %}
         <p>{{ comment.author }} on {{ comment.creation_datetime }}:</p>
         <p>{{ comment.comment_content }}</p>
+        {% if comment.author.id == user.id %}
+            <button>
+                <a href="{% url 'delete-comment' comment.id %}">Delete comment</a>
+            </button>
+        {% endif %}
     {% endfor %}
 
     <h5>Add comment:</h5>
