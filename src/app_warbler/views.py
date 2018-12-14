@@ -23,14 +23,18 @@ class CreateUserView(generic.CreateView):
     success_url   = 'login'
 
 
-class ListAllTweetsView(generic.ListView):
+class ListAllTweetsView(LoginRequiredMixin, generic.ListView):
     model         = models.Tweet
     template_name = 'app_warbler/all_tweets.html'
     paginate_by   = 10
     ordering      = ['-update_datetime']
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(is_blocked=False)
 
-class TweetDetailsView(generic.DetailView):
+
+class TweetDetailsView(LoginRequiredMixin, generic.DetailView):
     model         = models.Tweet
     template_name = 'app_warbler/tweet_details.html'
     form_class    = forms.CommentForm
@@ -45,7 +49,7 @@ class TweetDetailsView(generic.DetailView):
         return ctx
 
     def get_queryset(self):
-        return self.model.objects.filter(pk=self.kwargs.get('pk'))
+        return self.model.objects.filter(pk=self.kwargs.get('pk'), is_blocked=False)
 
     def post(self, *args, **kwargs):
         form = self.form_class(self.request.POST)
@@ -74,6 +78,10 @@ class UpdateTweetView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateVie
     template_name = 'app_warbler/update_tweet.html'
     fields        = ['tweet_content']
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(is_blocked=False)
+
     def test_func(self):
         return self.request.user.id == self.get_object().author.id
 
@@ -82,7 +90,7 @@ class UpdateTweetView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateVie
         return redirect('tweet-details', pk=self.get_object().pk)
 
 
-class ProfileDetailsView(generic.DetailView):
+class ProfileDetailsView(LoginRequiredMixin, generic.DetailView):
     model         = models.Profile
     template_name = 'app_warbler/profile_details.html'
 
@@ -92,7 +100,7 @@ class ProfileDetailsView(generic.DetailView):
         return ctx
 
 
-class CreateMessageView(generic.CreateView):
+class CreateMessageView(LoginRequiredMixin, generic.CreateView):
     model         = models.Message
     template_name = 'app_warbler/create_message.html'
     form_class    = forms.MessageForm
@@ -114,7 +122,7 @@ class CreateMessageView(generic.CreateView):
         return rsp
 
 
-class ListUserMessagesView(generic.ListView):
+class ListUserMessagesView(LoginRequiredMixin, generic.ListView):
     model         = models.Message
     template_name = 'app_warbler/user_messages.html'
     paginate_by   = 10
@@ -122,17 +130,17 @@ class ListUserMessagesView(generic.ListView):
 
     def get_queryset(self):
         return super().get_queryset().filter(
-            Q(from_user=self.request.user) |
-            Q(to_user=self.request.user)
+            Q(is_blocked=False),
+            Q(from_user=self.request.user) | Q(to_user=self.request.user)
         )
 
 
-class MessageDetailsView(generic.DetailView):
+class MessageDetailsView(LoginRequiredMixin, generic.DetailView):
     model         = models.Message
     template_name = 'app_warbler/message_details.html'
 
     def get_queryset(self):
-        return self.model.objects.filter(pk=self.kwargs.get('pk'))
+        return self.model.objects.filter(pk=self.kwargs.get('pk'), is_blocked=False)
 
     def get(self, request, *args, **kwargs):
         self.get_queryset().update(is_read=True)
