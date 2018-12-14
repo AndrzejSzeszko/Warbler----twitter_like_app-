@@ -1,17 +1,15 @@
 {% extends 'app_warbler/base.html' %}
 
 {% block content %}
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
 
     <a href="{% url 'create-message' profile.user_id %}">Send message to this user</a>
 
     <h4>{{ profile.user.username }}</h4>
+    {% if profile.user.id == user.id %}
+        <button type="button">
+            <a href="{% url 'delete-user' profile.user.id %}">Delete profile</a>
+        </button>
+    {% endif %}
     {{ profile.user.first_name }}{{ profile.user.last_name }}
     <p>{{ profile.user.email }}</p>
     <p>About myself: {{ profile.about_myself }}</p>
@@ -24,4 +22,4 @@
         </p>
     {% endfor %}
 
-    {% endblock content %}
+{% endblock content %}
