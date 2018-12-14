@@ -1,6 +1,7 @@
 {% extends 'app_warbler/base.html' %}
 
 {% block content %}
+
     <h3>All Tweets:</h3>
 
     {% for tweet in tweet_list %}
@@ -10,4 +11,5 @@
         <a href="{% url 'tweet-details' tweet.pk %}">{{ tweet.content }}</a>
         </p>
     {% endfor %}
+
 {% endblock content %}
