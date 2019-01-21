@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.db import models
+from PIL import Image
 
 
 def get_sentinel_user():
@@ -10,11 +11,19 @@ def get_sentinel_user():
 
 class Profile(models.Model):
     user         = models.OneToOneField(User, on_delete=models.CASCADE)
-    # photo        = models.ImageField(default='default_user.jpg', upload_to='profile_pics')
+    photo        = models.ImageField(default='default_user.jpg', upload_to='profile_pics')
     about_myself = models.TextField(max_length=256, null=True, blank=True)
 
     def __str__(self):
         return f'{self.user.username}\' profile'
+
+    def save(self, *args, **kwargs):
+        super().save()
+        img = Image.open(self.photo)
+        if img.height > 250 or img.width > 250:
+            output_size = (250, 250)
+            img.thumbnail(output_size)
+            img.save(self.photo.path)
 
 
 class Tweet(models.Model):
