@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+import json
+
+# replace path in open('') with path to your warbler_config.json file.
+with open('/home/andrzej_hp/PycharmProjects/warbler/my_warbler_config.json') as config_file:
+    config = json.load(config_file)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ln+on!_w#j2=e8+zkebl$8(@buf3a3j&e0xmfrhuvw+=s-b6e1'
+SECRET_KEY = config.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -31,12 +36,16 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # added on "django-admin startproject"
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # third party
+    'crispy_forms',
+    # custom
     'app_warbler.apps.AppWarblerConfig',
 ]
 
@@ -55,8 +64,7 @@ ROOT_URLCONF = 'warbler.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'app_warbler/templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'app_warbler/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,9 +86,9 @@ WSGI_APPLICATION = 'warbler.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'warbler',
-        'USER': 'postgres',
-        'PASSWORD': 'coderslab',
+        'NAME': config.get('DB_NAME'),
+        'USER': config.get('DB_USER'),
+        'PASSWORD': config.get('DB_USER_PASS'),
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
@@ -131,3 +139,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'list-all-tweets'
+
+
+# crispy forms stuff
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
