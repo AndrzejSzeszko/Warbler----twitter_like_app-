@@ -43,6 +43,29 @@ class DeleteUserView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView
         return rsp
 
 
+class UpdateUserAndProfileView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
+    model         = User
+    template_name = 'app_warbler/update_user_and_profile.html'
+    form_class    = forms.UserAndProfileUpdateForm
+
+    def get_queryset(self):
+        return self.model.objects.filter(profile__is_blocked=False)
+
+    def get_success_url(self):
+        return reverse_lazy('profile-details', kwargs={'pk': self.get_object().profile.pk})
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update(instance={
+            'user': self.object,
+            'profile': self.object.profile
+        })
+        return kwargs
+
+    def test_func(self):
+        return self.get_object() == self.request.user
+
+
 class ListAllTweetsView(LoginRequiredMixin, generic.ListView):
     model         = models.Tweet
     template_name = 'app_warbler/all_tweets.html'
