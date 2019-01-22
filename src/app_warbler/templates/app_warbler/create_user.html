@@ -1,0 +1,13 @@
+{% extends 'app_warbler/base.html' %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+    <div>
+        <h3>Create new account:</h3>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" value="Create" class="btn btn-outline-info">
+        </form>
+    </div>
+{% endblock content %}

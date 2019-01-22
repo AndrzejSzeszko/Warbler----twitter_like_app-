@@ -1,0 +1,13 @@
+{% extends 'app_warbler/base.html' %}
+
+{% block content %}
+
+    <h2>Deleting {{ object }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        <h4>Do you really want to delete this comment? There won't be possibility to undo that!</h4>
+        <input class="btn btn-outline-danger" type="submit" value="Confirm">
+        <a class="btn btn-outline-primary" href="{% url 'tweet-details' object.tweet.pk %}">Cancel</a>
+    </form>
+
+{% endblock content %}

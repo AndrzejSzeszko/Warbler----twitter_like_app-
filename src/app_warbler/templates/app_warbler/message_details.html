@@ -1,0 +1,28 @@
+{% extends 'app_warbler/base.html' %}
+
+{% block content %}
+
+    <article class="media content-section">
+        <img class="rounded-circle article-img" src="{{ message.from_user.profile.photo.url }}">
+        <div class="media-body">
+            <div class="article-metadata">
+                <h4 class="mr-2">Message {{ message.id }}:</h4>
+                {% if message.from_user.is_blocked %}
+                    <span class="mr-2 text-muted">{{ message.from_user }} (user blocked)</span>
+                    <small class="text-muted">{{ message.creation_datetime|date:"Y/m/d H:i:s" }}</small>
+                {% else %}
+                    <p class="mr-2">
+                        From:
+                        <a class="mr-2" href="{% url 'profile-details' message.from_user.id %}">{{ message.from_user }}</a>
+                        <small class="text-muted">{{ message.creation_datetime|date:"Y/m/d H:i:s" }}</small><br>
+                        To:
+                        <a class="mr-2" href="{% url 'profile-details' message.to_user.id %}">{{ message.to_user }}</a>
+                        <small class="text-muted">{{ message.creation_datetime|date:"Y/m/d H:i:s" }}</small>
+                    </p>
+                {% endif %}
+            </div>
+            <p class="article-content">{{ message.message_content }}</p>
+        </div>
+    </article>
+
+{% endblock content %}
