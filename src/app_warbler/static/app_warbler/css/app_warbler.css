@@ -94,3 +94,8 @@ a.article-title:hover {
 #beta {
     font-size: 50%;
 }
+
+.unread-message {
+    font-weight: bolder;
+    text-decoration: underline;
+}
