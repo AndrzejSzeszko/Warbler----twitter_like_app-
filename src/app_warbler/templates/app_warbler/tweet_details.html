@@ -1,39 +1,58 @@
 {% extends 'app_warbler/base.html' %}
+{% load crispy_forms_filters %}
 
 {% block content %}
 
-    <h4>Author: <a href="{% url 'profile-details' tweet.author.id %}">{{ tweet.author }}</a></h4>
-    <p>Created: {{ tweet.creation_datetime }}</p>
-    <p>Lastly Updated: {{ tweet.update_datetime }}</p>
-    <p>Content:</p>
-    <p>{{ tweet.tweet_content }}</p>
-    <p>
-        {% if tweet.author.id == user.id %}
-            <button type="button">
-                <a href="{% url 'update-tweet' tweet.id %}">Edit tweet</a>
-            </button>
-            <button type="button">
-                <a href="{% url 'delete-tweet' tweet.id %}">Delete tweet</a>
-            </button>
-        {% endif %}
-    </p>
+    <article class="media content-section">
+        <img class="rounded-circle article-img" src="{{ tweet.author.profile.photo.url }}">
+        <div class="media-body">
+            <div class="article-metadata">
+                {% if tweet.author.profile.is_blocked %}
+                    <span class="mr-2 text-muted">{{ tweet.author }} (user blocked)</span>
+                {% else %}
+                    <a class="mr-2" href="{% url 'profile-details' tweet.author_id %}">{{ tweet.author }}</a>
+                {% endif %}
+                    <small class="text-muted">Created: {{ tweet.creation_datetime|date:"Y/m/d H:i:s" }}</small>
+                {% if tweet.creation_datetime|date:"Y/m/d H:i:s" != tweet.update_datetime|date:"Y/m/d H:i:s" %}
+                    <small class="text-muted">Updated: {{ tweet.update_datetime|date:"Y/m/d H:i:s" }}</small>
+                {% endif %}
+            </div>
+            <p class="article-content">{{ tweet.tweet_content }}</p>
 
-    <h5>Comments:</h5>
+            {% if tweet.author == user %}
+                <a class="btn btn-outline-info" href="{% url 'update-tweet' tweet.pk %}">Update tweet</a>
+                <a class="btn btn-outline-danger" href="{% url 'delete-tweet' tweet.pk %}">Delete tweet</a>
+            {% endif %}
+        </div>
+    </article>
+
+    <h4 class="article-title">Comments:</h4>
     {% for comment in comments %}
-        <p>{{ comment.author }} on {{ comment.creation_datetime }}:</p>
-        <p>{{ comment.comment_content }}</p>
-        {% if comment.author.id == user.id %}
-            <button>
-                <a href="{% url 'delete-comment' comment.id %}">Delete comment</a>
-            </button>
-        {% endif %}
+        <fieldset class="col-md-6">
+            <div class="panel panel-default content-section">
+                <div class="article-metadata">
+                    {% if comment.author.profile.is_blocked %}
+                        <span class="mr-2 text-muted">{{ comment.author }} (user blocked)</span>
+                    {% elif comment.author.username == 'Deleted_user' %}
+                        <span class="mr-2 text-muted">deleted user</span>
+                    {% else %}
+                        <a class="mr-2" href="{% url 'profile-details' comment.author_id %}">{{ comment.author }}</a>
+                    {% endif %}
+                        <small class="text-muted">{{ comment.creation_datetime|date:"Y/m/d H:i:s" }}</small>
+                </div>
+                <p>{{ comment.comment_content }}</p>
+                {% if comment.author == user %}
+                    <a class="btn btn-outline-danger" href="{% url 'delete-comment' comment.pk %}">Delete comment</a>
+                {% endif %}
+            </div>
+        </fieldset>
     {% endfor %}
 
-    <h5>Add comment:</h5>
-    <form action="" method="post">
+    <h4>Add comment:</h4>
+    <form method="post">
         {% csrf_token %}
-        {{ comment_form.as_p }}
-        <input type="submit" value="Add comment">
+            {{ comment_form|crispy }}
+        <input type="submit" value="Post comment" class="btn btn-outline-info">
     </form>
 
 {% endblock content %}

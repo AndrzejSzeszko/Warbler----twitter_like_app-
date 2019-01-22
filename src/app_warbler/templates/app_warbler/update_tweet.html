@@ -1,15 +1,14 @@
 {% extends 'app_warbler/base.html' %}
+{% load crispy_forms_filters %}
 
 {% block content %}
 
-    <h2>Update Tweet:</h2>
+    <h4>Update Tweet:</h4>
     <form action="" method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Update">
-        <button type="button">
-            <a href="{% url 'tweet-details' object.id %}">Discard changes</a>
-        </button>
+        {{ form | crispy }}
+        <input type="submit" value="Save changes" class="btn btn-outline-info">
+        <a class="btn btn-outline-primary" href="{% url 'tweet-details' object.pk %}">Cancel</a>
     </form>
 
 {% endblock content %}

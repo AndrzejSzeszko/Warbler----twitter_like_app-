@@ -2,15 +2,12 @@
 
 {% block content %}
 
-<h2>Delete {{ object }}:</h2>
-
-    <form action="" method="post">
+    <h2>Deleting {{ object }}'s account</h2>
+    <form method="post">
         {% csrf_token %}
-        <p>Are you sure you want to delete {{ object }}?</p>
-        <input type="submit" value="confirm">
-        <button type="button">
-            <a href="{% url 'profile-details' object.id %}">Cancel</a>
-        </button>
+        <h4>Do you really want to delete your account? There won't be possibility to undo that!</h4>
+        <input class="btn btn-outline-danger" type="submit" value="Confirm">
+        <a class="btn btn-outline-primary" href="{% url 'profile-details' object.pk %}">Cancel</a>
     </form>
 
 {% endblock content %}

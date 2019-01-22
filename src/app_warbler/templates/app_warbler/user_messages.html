@@ -1,16 +1,33 @@
 {% extends 'app_warbler/base.html' %}
+{% load static %}
 
 {% block content %}
 
-    <h3>User {{ user.username }} messages:</h3>
+    <h4>User {{ user.username }} messages:</h4>
 
     {% for msg in message_list %}
-        <p {% if not msg.is_read %}style="font-weight: bolder; text-decoration: underline"{% endif %}>
-            <a href="{% url 'profile-details' msg.from_user_id %}">{{ msg.from_user }}</a>
-            <a href="{% url 'profile-details' msg.to_user_id %}">{{ msg.to_user }}</a>
-            {{ msg.creation_datetime }}
-            <a href="{% url 'msg-details' msg.pk %}">{{ msg.message_content|slice:":10" }}...</a>
-        </p>
+        <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ msg.from_user.profile.photo.url }}">
+            <div class="media-body">
+                <div class="article-metadata d-flex">
+                    <span>from: </span>
+                    {% if msg.from_user.profile.is_blocked %}
+                        <span class="mr-2 text-muted">{{ msg.from_user }} (user blocked)</span>
+                    {% else %}
+                        <a class="mr-2" href="{% url 'profile-details' msg.from_user_id %}">{{ msg.from_user }}</a>
+                    {% endif %}
+                        <small class="mr-2 text-muted">Created: {{ msg.creation_datetime|date:"Y/m/d H:i:s" }}</small>
+                    <span class="ml-auto">to: </span>
+                    {% if msg.to_user.profile.is_blocked %}
+                        <span class="mr-2 text-muted">{{ msg.to_user }} (user blocked)</span>
+                    {% else %}
+                        <a class="mr-2" href="{% url 'profile-details' msg.to_user_id %}">{{ msg.to_user }}</a>
+                    {% endif %}
+                </div>
+                <a class="article-content {% if not msg.is_read %}unread-message{% endif %}" href="{% url 'msg-details' msg.pk %}">{{ msg.message_content|slice:":10" }}...</a>
+            </div>
+            <img class="rounded-circle article-img" src="{{ msg.to_user.profile.photo.url }}">
+        </article>
     {% endfor %}
 
 {% endblock content %}

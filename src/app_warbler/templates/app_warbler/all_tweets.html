@@ -5,11 +5,23 @@
     <h3>All Tweets:</h3>
 
     {% for tweet in tweet_list %}
-        <p>
-        <a href="{% url 'profile-details' tweet.author.id %}">{{ tweet.author }}</a>
-        <p>{{ tweet.creation_datetime }} {{ tweet.update_datetime }}</p>
-        <a href="{% url 'tweet-details' tweet.pk %}">{{ tweet.tweet_content }}</a>
-        </p>
+        <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ tweet.author.profile.photo.url }}">
+            <div class="media-body">
+                <div class="article-metadata">
+                    {% if tweet.author.profile.is_blocked %}
+                        <span class="mr-2 text-muted">{{ tweet.author }} (user blocked)</span>
+                    {% else %}
+                        <a class="mr-2" href="{% url 'profile-details' tweet.author_id %}">{{ tweet.author }}</a>
+                    {% endif %}
+                        <small class="text-muted">Created: {{ tweet.creation_datetime|date:"Y/m/d H:i:s" }}</small>
+                    {% if tweet.creation_datetime|date:"Y/m/d H:i:s" != tweet.update_datetime|date:"Y/m/d H:i:s" %}
+                        <small class="text-muted">Updated: {{ tweet.update_datetime|date:"Y/m/d H:i:s" }}</small>
+                    {% endif %}
+                </div>
+                <a class="article-content" href="{% url 'tweet-details' tweet.pk %}">{{ tweet.tweet_content }}</a>
+            </div>
+        </article>
     {% endfor %}
 
 {% endblock content %}

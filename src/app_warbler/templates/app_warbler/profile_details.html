@@ -2,26 +2,41 @@
 
 {% block content %}
 
-    <button type="button">
-     <a href="{% url 'create-message' profile.user_id %}">Send message to this user</a>
-    </button>
+    <article class="media content-section">
+        <div class="media-body">
+            <h4>User {{ profile.user.username }} information:</h4>
+            <a class="btn btn-outline-primary btn-sm" href="{% url 'create-message' profile.user_id %}">Send message to this user</a>
+            <div>
+                <img class="article-content img-profile" src="{{ profile.photo.url }}" alt="Here should be post's photo"><br>
+                <small class="text-muted">{{ profile.user.email }}</small><br>
+                {% if profile.user.first_name or profile.user.last_name %}
+                    {{ profile.user.first_name }} {{ profile.user.last_name }}
+                {% endif %}<br>
+                {% if profile.about_myself %}
+                    <p class="article-content">About myself: {{ profile.about_myself }}</p>
+                {% endif %}
+            </div>
 
-    <h4>{{ profile.user.username }}</h4>
-    {% if profile.user.id == user.id %}
-        <button type="button">
-            <a href="{% url 'delete-user' profile.user.id %}">Delete profile</a>
-        </button>
-    {% endif %}
-    {{ profile.user.first_name }}{{ profile.user.last_name }}
-    <p>{{ profile.user.email }}</p>
-    <p>About myself: {{ profile.about_myself }}</p>
-    <p>My Tweets:</p>
+            {% if profile.user == user %}
+                <a class="btn btn-outline-info" href="{% url 'update-user' profile.pk %}">Update information about you</a>
+                <a class="btn btn-outline-danger" href="{% url 'delete-user' profile.user.pk %}">Delete account</a>
+            {% endif %}
+        </div>
+    </article>
+
+    <h4>User's tweets:</h4>
     {% for tweet in tweets %}
-        <p>
-            {{ tweet.creation_datetime }}
-            {{ tweet.update_datetime }}
-            <a href="{% url 'tweet-details' tweet.id %}">{{ tweet.tweet_content }}</a>
-        </p>
+        <article class="media content-section">
+            <div class="media-body">
+                <div class="article-metadata">
+                    <small class="text-muted">Created: {{ tweet.creation_datetime|date:"Y/m/d H:i:s" }}</small>
+                    {% if tweet.creation_datetime|date:"Y/m/d H:i:s" != tweet.update_datetime|date:"Y/m/d H:i:s" %}
+                        <small class="text-muted">Updated: {{ tweet.update_datetime|date:"Y/m/d H:i:s" }}</small>
+                    {% endif %}
+                </div>
+                <a class="article-content" href="{% url 'tweet-details' tweet.id %}">{{ tweet.tweet_content }}</a>
+            </div>
+        </article>
     {% endfor %}
 
 {% endblock content %}

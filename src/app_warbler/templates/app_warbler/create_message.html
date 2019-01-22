@@ -1,11 +1,13 @@
 {% extends 'app_warbler/base.html' %}
+{% load crispy_forms_filters %}
 
 {% block content %}
-    <h2>Sending a message to user {{ to_user.username }}</h2>
-    <form action="" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Send">
-    </form>
-
+    <div>
+        <h3>Sending message to user {{ to_user.username }}</h3>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" value="Send" class="btn btn-outline-info">
+        </form>
+    </div>
 {% endblock content %}
