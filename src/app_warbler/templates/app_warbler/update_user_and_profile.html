@@ -1,0 +1,14 @@
+{% extends 'app_warbler/base.html' %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+
+    <h4>Update User data:</h4>
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form | crispy }}
+        <input type="submit" value="Save changes" class="btn btn-outline-info">
+        <a class="btn btn-outline-primary" href="{% url 'profile-details' object.profile.pk %}">Cancel</a>
+    </form>
+
+{% endblock content %}
