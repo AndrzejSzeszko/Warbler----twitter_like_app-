@@ -35,8 +35,11 @@ def message_abstract(message_obj):
 
 class ProfileAdmin(admin.ModelAdmin):
     list_display = [
+        'pk',
         'user',
-        'about_myself'
+        'about_myself',
+        'photo',
+        'is_blocked'
     ]
     actions = [block_object, unblock_object]
 
