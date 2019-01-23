@@ -1,4 +1,4 @@
-Django==2.1.4
+Django==2.1.5
 django-betterforms==1.2
 django-crispy-forms==1.7.2
 Pillow==5.3.0
