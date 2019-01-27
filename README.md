@@ -5,6 +5,4 @@ This is Twitter-like app made by myself.
 
 ## To Do:
 - comment liking
-- SSL certificate
-- domain name
 - pagination where needed
